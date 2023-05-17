@@ -19,7 +19,7 @@ typedef struct ListPlayersStruct listPlayers;
 
 struct TeamStruct {
     char *name;
-    float points;
+    float teamPoints;
     int numberMembers;
     listPlayers list;
     struct TeamStruct *nextTeam;
@@ -32,5 +32,7 @@ void modifyString (char **string);
 listPlayers readAllMembers(FILE *fileReadValues, team **currentTeam, int numberMembers);
 
 void readValues(FILE *fileReadValues, int *numberTeams, team **allTeams);
+
+void writeTeams(FILE *fileWrite, team **allTeams);
 
 void task1 (FILE* fileReadValues, FILE* fileWrite, int *numberTeams, team **allTeams);

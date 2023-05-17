@@ -1,15 +1,16 @@
+#include <stdio.h>
+
 #include "task1.h"
 
 void modifyString (char **string) {
     string[0][strlen(*string) - 2] = '\0';
-    
     *string = (char *)realloc(*string, strlen(*string) * sizeof(char));
-    
 }
 
 listPlayers readAllMembers(FILE *fileReadValues, team **currentTeam, int numberMembers) {
     listPlayers newList;
     newList.nextPlayer = NULL;
+    float averagePoints = 0.0;
 
     for (int i = 0; i < numberMembers; i++) {
         player newPlayer;
@@ -25,12 +26,14 @@ listPlayers readAllMembers(FILE *fileReadValues, team **currentTeam, int numberM
         fgetc(fileReadValues);
 
         fscanf(fileReadValues, "%d", &newPlayer.points);
+        averagePoints = averagePoints + newPlayer.points;
 
         listPlayers newEntity;
         newEntity.playerMember = newPlayer;
         newEntity.nextPlayer = newList.nextPlayer;
         newList.nextPlayer = &newEntity;
     }
+    (*currentTeam)->teamPoints = averagePoints / numberMembers;
     return newList;
 }
 
@@ -60,22 +63,20 @@ void readValues(FILE *fileReadValues, int *numberTeams, team **allTeams) {
     }
 }
 
-void writeValues(FILE *fileWrite, team **allTeams) {
+void writeTeams(FILE *fileWrite, team **allTeams) {
     //aici trebuie sa faci o copie la allTeams ca sa nu pierzi adresa de inceput a listei
     //dar nu trebuie sa faci copii >:C
     team *iter = *allTeams;
     if (iter != NULL) {
-        int nr = 0;
         while(iter != NULL) {
             fprintf(fileWrite, "%s\n", iter->name);
             iter = iter->nextTeam;
         }
     }
+    free(iter);
 }
 
 void task1 (FILE *fileReadValues, FILE *fileWrite, int *numberTeams, team **allTeams) {
-    
     readValues(fileReadValues, numberTeams, allTeams);
-    writeValues(fileWrite, allTeams);
     fclose(fileReadValues);
 }

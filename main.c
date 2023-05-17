@@ -1,4 +1,9 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include "task1.h"
+#include "task2.h"
 
     //argv[0] - Executabil
     //argv[1] - c.in
@@ -17,27 +22,27 @@ int main (int argc, char *argv[]) {
     for (int i = 0; i < 5; i++) {
         fscanf(fileTypeTask, "%d", &taskType[i]);
     }
+    int numberTeams;
+    team *allTeams = NULL;
 
     if (taskType[0]) {
         //FILE *fileReadValues = fopen("d.txt", "r");
-        
         FILE *fileReadValues = fopen(argv[2], "r");
-        int numberTeams;
-        team *allTeams = NULL;
         task1(fileReadValues, fileWrite, &numberTeams, &allTeams);
     }
-    else if (taskType[1]) {
-        int x = 3;
+    if (taskType[1]) {
+        task2(fileWrite, &numberTeams, &allTeams);
     }
-    else if (taskType[2]) {
+    if (taskType[2]) {
         int x = 2;
     }
-    else if (taskType[3]) {
+    if (taskType[3]) {
         int x = 1;
     }
-    else if (taskType[4]) {
+    if (taskType[4]) {
         int x = 0;
     }
+    writeTeams(fileWrite, &allTeams);
     // Functie care goleste toate listele + inchide fisierele
     fclose(fileTypeTask);
     fclose(fileWrite);
