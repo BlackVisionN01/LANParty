@@ -5,7 +5,7 @@
 #include "task1.h"
 #include "task2.h"
 #include "task3.h"
-#include "task4.h"
+
 
     //argv[0] - Executabil
     //argv[1] - c.in
@@ -26,7 +26,7 @@ int main (int argc, char *argv[]) {
     }
     int numberTeams;
     team *allTeams = NULL;
-    stackTeams *top8 = NULL;
+    last8Teams *top8 = NULL;
 
     if (taskType[0]) {
         //FILE *fileReadValues = fopen("d.txt", "r");
@@ -44,7 +44,7 @@ int main (int argc, char *argv[]) {
         task3(fileWrite, numberTeams, allTeams, &top8);
     }
     if (taskType[3]) {
-        int x = 1;
+        task4(fileWrite, top8);
     }
     if (taskType[4]) {
         int x = 0;
