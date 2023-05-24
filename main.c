@@ -4,6 +4,8 @@
 
 #include "task1.h"
 #include "task2.h"
+#include "task3.h"
+#include "task4.h"
 
     //argv[0] - Executabil
     //argv[1] - c.in
@@ -24,17 +26,22 @@ int main (int argc, char *argv[]) {
     }
     int numberTeams;
     team *allTeams = NULL;
+    stackTeams *top8 = NULL;
 
     if (taskType[0]) {
         //FILE *fileReadValues = fopen("d.txt", "r");
         FILE *fileReadValues = fopen(argv[2], "r");
         task1(fileReadValues, fileWrite, &numberTeams, &allTeams);
+        if (taskType[1] != 1) {
+            writeTeams(fileWrite, &allTeams);
+        }
     }
     if (taskType[1]) {
         task2(fileWrite, &numberTeams, &allTeams);
+        writeTeams(fileWrite, &allTeams);
     }
     if (taskType[2]) {
-        int x = 2;
+        task3(fileWrite, numberTeams, allTeams, &top8);
     }
     if (taskType[3]) {
         int x = 1;
@@ -42,7 +49,6 @@ int main (int argc, char *argv[]) {
     if (taskType[4]) {
         int x = 0;
     }
-    writeTeams(fileWrite, &allTeams);
     // Functie care goleste toate listele + inchide fisierele
     fclose(fileTypeTask);
     fclose(fileWrite);

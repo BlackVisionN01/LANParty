@@ -32,7 +32,7 @@ void eliminateTeamTask2(team ***allTeams) {
 
 void task2(FILE *fileWrite, int *numberTeams, team **allTeams) {
     int newNumberTeams = 1;
-    while (newNumberTeams * 2 < *numberTeams) {
+    while (newNumberTeams * 2 <= *numberTeams) {
         newNumberTeams = newNumberTeams * 2;
     }
     while (*numberTeams > newNumberTeams) {

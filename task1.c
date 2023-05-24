@@ -5,6 +5,9 @@
 void modifyString (char **string) {
     string[0][strlen(*string) - 2] = '\0';
     *string = (char *)realloc(*string, strlen(*string) * sizeof(char));
+    if (string[0][strlen(*string) - 1] == ' ') {
+        string[0][strlen(*string) - 1] = '\0';
+    }
 }
 
 listPlayers readAllMembers(FILE *fileReadValues, team **currentTeam, int numberMembers) {
