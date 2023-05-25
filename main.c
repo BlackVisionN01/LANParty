@@ -49,5 +49,6 @@ int main (int argc, char *argv[]) {
     fclose(fileTypeTask);
     fclose(fileWrite);
     free(taskType);
+    free(top8);
     return 0;   
 }
