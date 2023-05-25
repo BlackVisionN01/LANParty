@@ -49,6 +49,15 @@ queue *deQueue (queue *queueMatches) {
     return queueMatches;
 }
 
+void deleteStack(stackTeams **team){
+	stackTeams *temp;
+	while (*team != NULL){
+		temp=*team;
+		*team = (*team)->nextTeamStack;
+		free(temp);
+	}
+}
+
 void splitTeams (FILE *fileWrite, queue **queueMatches, stackTeams **winnerTeams, stackTeams **loserTeams) {
     while ((*queueMatches)->first != NULL) {
         team *teamNO1Match = (*queueMatches)->first->teamNO1;
@@ -170,6 +179,9 @@ void placingTeams (FILE *fileWrite, int *numberTeams, team *allTeams, queue *que
 
     fprintf(fileWrite, "\n--- ROUND NO:%d", numberRound);
     lastTwoTeams(fileWrite, queueMatches, winnerTeams, loserTeams, numberRound, top8);
+    deleteStack(&winnerTeams);
+    deleteStack(&loserTeams);
+
 }
 
 void task3(FILE *fileWrite, int numberTeams, team *allTeams, last8Teams **top8) {
@@ -183,6 +195,23 @@ void task3(FILE *fileWrite, int numberTeams, team *allTeams, last8Teams **top8) 
     free(allTeams);
 
     placingTeams(fileWrite, &numberTeams, allTeams, queueMatches, top8);
+}
+
+void addTeamAtEnd (last8Teams **top8, last8Teams *newTop8Team) {
+    last8Teams *aux = *top8;
+    last8Teams *newTeamInTop8 = (last8Teams *)malloc(sizeof(last8Teams));
+    newTeamInTop8 = newTop8Team;
+    if (*top8 == NULL) {
+        newTeamInTop8->next8Team = *top8;
+        *top8 = newTeamInTop8;
+    }
+    else {
+        while(aux->next8Team != NULL) {
+            aux = aux->next8Team;
+        }
+        aux->next8Team = newTeamInTop8;
+        newTeamInTop8->next8Team = NULL;
+    }
 }
 
 tree* newRoot(last8Teams *teamTop) {
@@ -213,21 +242,115 @@ tree* insert(tree* root, last8Teams *teamTop) {
     return root;
 }
 
-void writeIordine(FILE *fileWrite,tree *root) {
-    if(root == NULL) return ;
-    
-        writeIordine(fileWrite, root->right);
+void placeIordine(FILE *fileWrite, last8Teams **top8, tree *root) {
+    if(root != NULL) {
+        placeIordine(fileWrite, top8, root->right);
         fprintf(fileWrite, "\n%-33s -  %.2f",root->treeTeam->name8Team, root->treeTeam->points8Team);
-        writeIordine(fileWrite, root->left);
+        addTeamAtEnd(top8, root->treeTeam);
+        placeIordine(fileWrite, top8, root->left);
+    }
 }
 
-void task4(FILE *fileWrite, last8Teams *top8) {
+void task4(FILE *fileWrite, last8Teams **top8) {
     tree *root = NULL;
     int numberTopTeams = 8;
     for (int i = 0; i < numberTopTeams; i++) {
-        root = insert(root, top8);
-        top8 = top8->next8Team;
+        root = insert(root, *top8);
+        *top8 = (*top8)->next8Team;
     }
     fprintf(fileWrite, "\nTOP 8 TEAMS:");
-    writeIordine(fileWrite, root);
+    placeIordine(fileWrite, top8, root);
+    deleteTree(root);
+}
+
+int max (int val1, int val2) {
+    if (val1 >= val2) {
+        return val1;
+    }
+    return val2;
+}
+
+int heightAVL (AVL *rootAVL) {
+    if(rootAVL == NULL) {
+        return -1;
+    }
+    int hs, hd;
+    hs = heightAVL(rootAVL->leftAVL) + 1;
+    hd = heightAVL(rootAVL->rightAVL) + 1;
+    return max(hs, hd);
+}
+
+void deleteTree(tree *root) {
+    if (root != NULL) {
+        deleteTree(root->left);
+        deleteTree(root->right);
+        free(root);
+    }
+    return ;
+}
+
+void printLevel2 (FILE *fileWrite,AVL *rootAVl) {
+    AVL *rootAVLRight = rootAVl->rightAVL;
+    AVL *rootAVLLeft = rootAVl->leftAVL;
+    fprintf(fileWrite, "%s\n%s\n", rootAVLRight->rightAVL->AVLTeam->name8Team, rootAVLRight->leftAVL->AVLTeam->name8Team);
+    fprintf(fileWrite, "%s\n%s\n", rootAVLLeft->rightAVL->AVLTeam->name8Team, rootAVLLeft->leftAVL->AVLTeam->name8Team);
+}
+
+AVL *rRotation(AVL* teamAVL) {
+    AVL* rRMiddleTeam = teamAVL->leftAVL;
+    AVL* rRLastTeam = rRMiddleTeam->rightAVL;
+    rRMiddleTeam->rightAVL = teamAVL;
+    teamAVL->leftAVL = rRLastTeam;
+    teamAVL->height = max(heightAVL(teamAVL->leftAVL), heightAVL(teamAVL->rightAVL));
+    rRMiddleTeam->height = max(heightAVL(rRMiddleTeam->leftAVL), heightAVL(rRMiddleTeam->leftAVL));
+    return rRMiddleTeam;
+}
+
+AVL *pushAVL(AVL *rootAVL, last8Teams *top8TeamAVL) {
+    if(rootAVL == NULL) {
+        rootAVL = (AVL *)malloc(sizeof(AVL));
+        rootAVL->AVLTeam = top8TeamAVL;
+        rootAVL->leftAVL = NULL;
+        rootAVL->rightAVL = NULL;
+        return rootAVL;
+    }
+    else {
+        rootAVL->leftAVL = pushAVL(rootAVL->leftAVL, top8TeamAVL);
+    }
+    rootAVL->height = 1 + max(heightAVL(rootAVL->leftAVL), heightAVL(rootAVL->rightAVL));
+    int toRotateAVL = heightAVL(rootAVL->leftAVL) - heightAVL(rootAVL->rightAVL);
+    if (toRotateAVL > 1) {
+        return rRotation(rootAVL);
+    }
+    return rootAVL;
+}
+
+AVL *createAVL(last8Teams *top8) {
+    AVL *AVLtree = (AVL *)malloc(sizeof(AVL));
+
+    AVLtree->AVLTeam = top8;
+    AVLtree->leftAVL = AVLtree->rightAVL = NULL;
+    AVLtree->height = 0;
+    
+    return AVLtree;
+}
+
+void deleteAVL (AVL *rootAVL) {
+    if (rootAVL != NULL) {
+        deleteAVL(rootAVL->leftAVL);
+        deleteAVL(rootAVL->rightAVL);
+        free(rootAVL);
+    }
+}
+
+void task5(FILE *fileWrite, last8Teams *top8) {
+    AVL *rootAVL = NULL;
+    while (top8 != NULL) {
+        rootAVL = pushAVL(rootAVL, top8);
+        top8 = top8->next8Team;
+    }
+    fprintf(fileWrite,"\n");
+    fprintf(fileWrite, "\nTHE LEVEL 2 TEAMS ARE:\n");
+    printLevel2(fileWrite, rootAVL);
+    deleteAVL(rootAVL);
 }
