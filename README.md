@@ -15,12 +15,12 @@ Pentr task-ul 2:
   
 Pentru task-ul 3:
 * se foloseste lista simpla inlantuita modificata de la task-ul 2
- * se pun echipele intr-o coada, fiecare element din coada fiind format din 2 echipe
- * se afiseaza elementele din coada
- * se impart echipele in 2 stive: echipele castigatoare si echipele invinse
- * determinarea castigatorului si pierzatorului se face prin compararea numarului de puncte al echipei
- * echipele castigatoare sunt afisate si dupa reintroduse in coada
- * echipele invinse sunt eliminate din stiva
+ + se pun echipele intr-o coada, fiecare element din coada fiind format din 2 echipe
+ + se afiseaza elementele din coada
+ + se impart echipele in 2 stive: echipele castigatoare si echipele invinse
+ + determinarea castigatorului si pierzatorului se face prin compararea numarului de puncte al echipei
+ + echipele castigatoare sunt afisate si dupa reintroduse in coada
+ + echipele invinse sunt eliminate din stiva
 * se repeta pana cand mai raman mai raman 2 echipe in coada
 * se afiseaza elementel din coada, se muta echipele in una din cele 2 stive fiecare si se afiseaza elementele din stiva de castigatori si se elimina din stiva de invinsi
 * cand se ajung la 8 echipe in stiva de castigatori, se retin aceste echipe intr-o stiva noua
