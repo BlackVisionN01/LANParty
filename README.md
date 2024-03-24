@@ -1,4 +1,4 @@
-# PAHomework
+# LANParty
 
 O aplicatie care se ocupa cu aranjarea echipelor in timpul unei competiti dintr-un LanParty.
 Sunt realizate toate cele 5 taskuri, task1.c si task2.c folosind functii pentru realizarea primelor 2 cerinta in timp ce task3+4+5.c are functiile pentru realizarea ultimelor 3 cerinte, rezultatul prin checker fiind de 100p.
